@@ -18,10 +18,10 @@ class Grid:
         
         for i in range(9):
             for j in range(9):
-                if num[ i * 9 + j] == ".":
+                if num[i * 9 + j] == ".":
                     self.grid[i].append("123456789")
                 else:
-                    self.grid[i].append(num[ i * 9 + j])
+                    self.grid[i].append(num[i * 9 + j])
                 
                 self.find_neighbors_of_elem(i, j)
         
@@ -31,9 +31,40 @@ class Grid:
             for elem in row:
                 print("{0: <9}".format(elem), end=" ")
             print("")
+            
+    def update(self):
+        old_grid = self.get_copy()
+        self.remove_elements_in_neighbors()
+        
+        while not old_grid.is_equal(self):
+            old_grid = self.get_copy()
+            self.remove_elements_in_neighbors()
+    
+    def remove_elements_in_neighbors(self):
+        for i in range(len(self.grid)):
+            row = self.grid[i]
+
+            for j in range(len(row)):
+                if len(row[j]) != 1:
+                    continue
+                
+                neighbors = self.neighbor_dict[(i, j)]
+                
+                for neighbor in neighbors:
+                    k = neighbor[0]
+                    l = neighbor[1]
+                    self.grid[k][l] = self.grid[k][l].replace(row[j], "")
     
     def get_copy(self):
         return deepcopy(self)
+    
+    def is_equal(self, other):
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if self.grid[i][j] != other.grid[i][j]:
+                    return False
+        
+        return True
     
     def find_neighbors_of_elem(self, i, j):
         elem = (i, j)
@@ -58,4 +89,5 @@ class Grid:
         self.neighbor_dict[elem] = list_tuple
 
 grid = Grid(".2.4...7..145.832..75.23.9..5281.................4758..6.38.95..396.281..4...1.3.")
+grid.update()
 grid.display()
