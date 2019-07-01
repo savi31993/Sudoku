@@ -7,6 +7,8 @@ Created on Fri Apr 26 15:30:36 2019
 
 from copy import deepcopy
 
+ALL_NUMS = "123456789"
+
 class Grid:
     def __init__(self,num):
         self.grid = []
@@ -19,19 +21,20 @@ class Grid:
         for i in range(9):
             for j in range(9):
                 if num[i * 9 + j] == ".":
-                    self.grid[i].append("123456789")
+                    self.grid[i].append(ALL_NUMS)
                 else:
                     self.grid[i].append(num[i * 9 + j])
                 
                 self.find_neighbors_of_elem(i, j)
         
-    
+    #The display method is used to show the grid   
     def display(self):
         for row in self.grid:
             for elem in row:
                 print("{0: <9}".format(elem), end=" ")
             print("")
-            
+
+    #Takes a copy of old grid, calls the other methods remove_            
     def update(self):
         old_grid = self.get_copy()
         self.remove_elements_in_neighbors()
@@ -39,6 +42,7 @@ class Grid:
         while not old_grid.is_equal(self):
             old_grid = self.get_copy()
             self.remove_elements_in_neighbors()
+            self.place_element_with_no_other_option()
     
     def remove_elements_in_neighbors(self):
         for i in range(len(self.grid)):
@@ -55,6 +59,29 @@ class Grid:
                     l = neighbor[1]
                     self.grid[k][l] = self.grid[k][l].replace(row[j], "")
     
+    def place_element_with_no_other_option(self):
+        for i in range(len(self.grid)):
+            for num in ALL_NUMS:
+                possible_places = []
+                
+                for j in range(len(self.grid[i])):
+                    if num in self.grid[i][j]:
+                        possible_places.append(j)
+                
+                if len(possible_places) == 1:
+                    self.grid[i][possible_places[0]] = num
+        
+        for j in range(len(self.grid[0])):
+            for num in ALL_NUMS:
+                possible_places = []
+                
+                for i in range(len(self.grid)):
+                    if num in self.grid[i][j]:
+                        possible_places.append(i)
+                
+                if len(possible_places) == 1:
+                    self.grid[possible_places[0]][j] = num
+
     def get_copy(self):
         return deepcopy(self)
     
@@ -88,6 +115,6 @@ class Grid:
 
         self.neighbor_dict[elem] = list_tuple
 
-grid = Grid(".2.4...7..145.832..75.23.9..5281.................4758..6.38.95..396.281..4...1.3.")
+grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
 grid.update()
 grid.display()
