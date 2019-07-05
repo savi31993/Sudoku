@@ -27,14 +27,14 @@ class Grid:
                 
                 self.find_neighbors_of_elem(i, j)
         
-    #The display method is used to show the grid   
+        #The display method is used to show the grid   
     def display(self):
         for row in self.grid:
             for elem in row:
                 print("{0: <9}".format(elem), end=" ")
             print("")
 
-    #Takes a copy of old grid, calls the other methods remove_            
+#Takes a copy of old grid, calls the other methods remove_            
     def update(self):
         old_grid = self.get_copy()
         self.remove_elements_in_neighbors()
@@ -92,7 +92,10 @@ class Grid:
                     return False
         
         return True
-    
+
+# To find neighbours of an element create a dictionary called neighbour_dict, 
+# key is a tuple of (row,coloumn) and value is a list of tuples(neighbour list:
+# ie, elements of same rows, same colums and same square )   
     def find_neighbors_of_elem(self, i, j):
         elem = (i, j)
 
@@ -116,5 +119,6 @@ class Grid:
         self.neighbor_dict[elem] = list_tuple
 
 grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
+
 grid.update()
 grid.display()
