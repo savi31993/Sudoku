@@ -43,6 +43,26 @@ class Grid:
             old_grid = self.get_copy()
             self.remove_elements_in_neighbors()
             self.place_element_with_no_other_option()
+        
+        # check if valid - return False if not
+        
+        # check if already solved - return True if yes
+        
+        # create a copy of the current grid
+        
+        # find the element with the least number of possibilities and not set
+        
+        # store the possibilities allowed for this element
+        # set the appropriate element in self.grid to a guess
+        
+        # call update recursively
+        # if the value returned is True, we have solved the puzzle - return True
+        # otherwise, we made a bad guess - reset the grid, 
+        # remove the guess from the possibilities and try again
+        
+        # we have tried all possibilities and none of them were valid
+        # return False - the puzzle was invalid
+        
     
     def remove_elements_in_neighbors(self):
         for i in range(len(self.grid)):
@@ -118,7 +138,8 @@ class Grid:
 
         self.neighbor_dict[elem] = list_tuple
 
-grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
+if __name__ == "__main__":
+    grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
 
-grid.update()
-grid.display()
+    grid.update()
+    grid.display()
