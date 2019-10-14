@@ -45,24 +45,73 @@ class Grid:
             self.place_element_with_no_other_option()
         
         # check if valid - return False if not
+        if self.is_invalid():
+            return False
         
         # check if already solved - return True if yes
+        if self.is_solved():
+            return True
         
         # create a copy of the current grid
+        current_copy = self.get_copy()
         
         # find the element with the least number of possibilities and not set
+        guess_point = current_copy.find_guess_point()
+        guess_row = guess_point[0]
+        guess_col = guess_point[1]
         
-        # store the possibilities allowed for this element
-        # set the appropriate element in self.grid to a guess
+        # loop starts here
+        while len(current_copy.grid[guess_row][guess_col]) > 0:
+            # set the appropriate element in copied grid to a guess
+            current_copy.grid[guess_row][guess_col] = current_copy.grid[guess_row][guess_col][0]
         
-        # call update recursively
-        # if the value returned is True, we have solved the puzzle - return True
-        # otherwise, we made a bad guess - reset the grid, 
-        # remove the guess from the possibilities and try again
+            # call update on copied grid
+            # if the value returned is True, we have solved the puzzle - return True
+            if current_copy.update():
+                self.grid = current_copy.grid
+                return True
+            
+            # otherwise, we made a bad guess - reset the grid, 
+            # remove the guess from the possibilities and try again
+            self.grid[guess_row][guess_col] = self.grid[guess_row][guess_col][1:]
+            current_copy = self.get_copy()
+
+        # loop ends here
         
         # we have tried all possibilities and none of them were valid
         # return False - the puzzle was invalid
+        return False
+    
+    def is_invalid(self):
+        for row in self.grid:
+            for element in row:
+                if len(element) == 0:
+                    return True
         
+        return False
+    
+    def is_solved(self):
+        for row in self.grid:
+            for element in row:
+                if len(element) != 1:
+                    return False
+        
+        return True
+    
+    def find_guess_point(self):
+        minimum_length = 9
+        minimum_pos = (0, 0)
+        
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if len(self.grid[i][j]) == 1:
+                    continue
+                
+                if len(self.grid[i][j]) < minimum_length:
+                    minimum_pos = (i, j)
+                    minimum_length = len(self.grid[i][j])
+        
+        return minimum_pos
     
     def remove_elements_in_neighbors(self):
         for i in range(len(self.grid)):
@@ -139,7 +188,8 @@ class Grid:
         self.neighbor_dict[elem] = list_tuple
 
 if __name__ == "__main__":
-    grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
+    #grid = Grid("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
+    grid = Grid("......51.89..4.......31.9..54.........62.98.........56..2.61.......3..68.78......")
 
     grid.update()
     grid.display()
